@@ -1,14 +1,13 @@
 import './App.css';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import db from './utils/firebase';
 
 function App() {
   const [todo, setTodo] = useState('');
   const [todoList, setTodoList] = useState([]);
+  const todoRef = db.ref('Todo');
 
   const handleClick = () =>{
-    setTodoList(prev=>[...prev, todo]);
-    const todoRef = db.ref('Todo');
     const todoItem = {
       todo,
       complete: false,
@@ -16,6 +15,16 @@ function App() {
     todoRef.push(todoItem);
     setTodo('');
   };
+
+  useEffect(() => {
+    todoRef.on('value', (snapshot)=>{
+      let arr = [];
+      snapshot.forEach(el=>{
+        arr.push(el.val());
+      })
+      setTodoList(arr);
+    })
+  }, [])
 
   return (
     <div>
@@ -25,7 +34,7 @@ function App() {
       <section>
         <ul>
           {todoList.map((el, i)=>(
-            <li key={`${i}-${el}`}>{el}</li>
+            <li key={`${i}-${el}`}>{el.todo}</li>
           ))}
         </ul>
       </section>
