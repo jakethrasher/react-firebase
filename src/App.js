@@ -15,13 +15,23 @@ function App() {
     todoRef.push(todoItem);
     setTodo('');
   };
+  
+  const handleComplete = (id) =>{
+    
+  };
 
+  const handleDel = (id) =>{
+    const todoDel = todoRef.child(id);
+    todoDel.remove();
+  };
+  
   useEffect(() => {
     todoRef.on('value', (snapshot)=>{
       let arr = [];
-      snapshot.forEach(el=>{
-        arr.push(el.val());
-      })
+      const todosObj=snapshot.val();
+      for(let key in todosObj){
+        arr.push({key, ...todosObj[key]})
+      }
       setTodoList(arr);
     })
   }, [])
@@ -33,8 +43,14 @@ function App() {
       <button onClick={handleClick}>add</button>
       <section>
         <ul>
-          {todoList.map((el, i)=>(
-            <li key={`${i}-${el}`}>{el.todo}</li>
+          {todoList && todoList.map((el, i)=>(
+            <div key={`${i}-${el}`}>
+              <li>
+                {el.todo}
+                <button onClick={()=>handleComplete(el.key)}>&#10003;</button>
+                <button onClick={()=>handleDel(el.key)}>x</button>
+              </li>
+            </div>
           ))}
         </ul>
       </section>
