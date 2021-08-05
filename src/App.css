@@ -39,3 +39,6 @@
 li{
   margin: 8px;
 }
+.lineThrough{
+  text-decoration: line-through;
+}

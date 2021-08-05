@@ -17,12 +17,15 @@ function App() {
   };
   
   const handleComplete = (id) =>{
-    
+    const todoChild = todoRef.child(id);
+      todoChild.update({
+        complete: !id.complete,
+      }) 
   };
 
   const handleDel = (id) =>{
-    const todoDel = todoRef.child(id);
-    todoDel.remove();
+    const todoChild = todoRef.child(id);
+    todoChild.remove()
   };
   
   useEffect(() => {
@@ -45,7 +48,7 @@ function App() {
         <ul>
           {todoList && todoList.map((el, i)=>(
             <div key={`${i}-${el}`}>
-              <li>
+              <li style={el.complete ? {textDecoration:'line-through'} : {textDecoration: 'none'}}>
                 {el.todo}
                 <button onClick={()=>handleComplete(el.key)}>&#10003;</button>
                 <button onClick={()=>handleDel(el.key)}>x</button>
